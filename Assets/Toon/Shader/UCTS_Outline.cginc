@@ -24,7 +24,13 @@
                 float4 pos : SV_POSITION;
                 float2 uv0 : TEXCOORD0;
             };
-            VertexOutput vert (VertexInput v) {
+			struct Frag_OUTPUT
+			{
+				float4 col0 : COLOR0;
+				float4 col1 : COLOR1;
+			};
+
+			VertexOutput vert (VertexInput v) {
                 VertexOutput o = (VertexOutput)0;
                 o.uv0 = v.texcoord0;
                 float4 objPos = mul ( unity_ObjectToWorld, float4(0,0,0,1) );
@@ -40,18 +46,22 @@
                 o.pos.z = o.pos.z + _Offset_Z*viewDirectionVP.z;
                 return o;
             }
-            float4 frag(VertexOutput i, float facing : VFACE) : COLOR {
-                float isFrontFace = ( facing >= 0 ? 1 : 0 );
-                float faceSign = ( facing >= 0 ? 1 : -1 );
-                float4 objPos = mul ( unity_ObjectToWorld, float4(0,0,0,1) );
-                float3 lightColor = _LightColor0.rgb;
-                float2 Set_UV0 = i.uv0;
-                float2 node_6858 = Set_UV0;
-                float4 _BaseMap_var = tex2D(_BaseMap,TRANSFORM_TEX(node_6858, _BaseMap));
-                float3 node_9970 = (_BaseColor.rgb*_BaseMap_var.rgb);
-                float3 Set_BaseColor = lerp( node_9970, (node_9970*_LightColor0.rgb), _Is_LightColor_Base );
-                float3 node_2878 = Set_BaseColor;
-                float3 Set_Outline_Color = lerp( _Outline_Color.rgb, (_Outline_Color.rgb*node_2878*node_2878), _Is_BlendBaseColor );
-                return fixed4(Set_Outline_Color,0);
-            }
-// UCTS_Outline.cginc ここまで.
+//			Frag_OUTPUT frag(VertexOutput i, float facing : VFACE) : COLOR{
+			float frag(VertexOutput i, float facing : VFACE) : COLOR{
+				float isFrontFace = (facing >= 0 ? 1 : 0);
+				float faceSign = (facing >= 0 ? 1 : -1);
+				float4 objPos = mul(unity_ObjectToWorld, float4(0,0,0,1));
+				float3 lightColor = _LightColor0.rgb;
+				float2 Set_UV0 = i.uv0;
+				float2 node_6858 = Set_UV0;
+				float4 _BaseMap_var = tex2D(_BaseMap,TRANSFORM_TEX(node_6858, _BaseMap));
+				float3 node_9970 = (_BaseColor.rgb*_BaseMap_var.rgb);
+				float3 Set_BaseColor = lerp(node_9970, (node_9970*_LightColor0.rgb), _Is_LightColor_Base);
+				float3 node_2878 = Set_BaseColor;
+				float3 Set_Outline_Color = lerp(_Outline_Color.rgb, (_Outline_Color.rgb*node_2878*node_2878), _Is_BlendBaseColor);
+				return fixed4(Set_Outline_Color,0);
+//				Frag_OUTPUT o;
+	///			o.col0 = fixed4(Set_Outline_Color, 0);
+		//		return o;
+			}
+				// UCTS_Outline.cginc ここまで.
