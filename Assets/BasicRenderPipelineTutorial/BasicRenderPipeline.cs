@@ -67,7 +67,7 @@ public static class BasicRendering
             SetupLightShaderVariables(cull.visibleLights, context);
 
             // Draw opaque objects using BasicPass shader pass
-            var settings = new DrawRendererSettings(cull, camera, new ShaderPassName("BasicPass"));
+            var settings = new DrawRendererSettings(cull, camera, new ShaderPassName("ForwardBase"));
             settings.sorting.flags = SortFlags.CommonOpaque;
             settings.inputFilter.SetQueuesOpaque();
             context.DrawRenderers(ref settings);
